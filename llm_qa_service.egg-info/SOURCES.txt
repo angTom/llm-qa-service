@@ -1,0 +1,9 @@
+README.md
+pyproject.toml
+app/main.py
+llm_qa_service.egg-info/PKG-INFO
+llm_qa_service.egg-info/SOURCES.txt
+llm_qa_service.egg-info/dependency_links.txt
+llm_qa_service.egg-info/requires.txt
+llm_qa_service.egg-info/top_level.txt
+test/test_llm_client.py

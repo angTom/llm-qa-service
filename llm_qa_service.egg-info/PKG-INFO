@@ -1,0 +1,29 @@
+Metadata-Version: 2.4
+Name: llm-qa-service
+Version: 0.1.0
+Summary: Add your description here
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi[standard]>=0.141.1
+Requires-Dist: openai>=3.19.2
+Requires-Dist: python-dotenv>=1.2.3
+Requires-Dist: tenacity>=9.1.4
+Requires-Dist: uvicorn>=0.54.0
+
+# llm-qa-service   大模型调用服务
+## 项目结构
+llm-qa-service/
+├── .env # 大模型配置文件（本地开发用，不要提交到Git）
+├── .env.example # 配置模板文件
+├── app/
+│   ├── main.py           # 入口，组装路由
+│   ├── routers/chat.py   # 问答接口
+│   ├── services/llm.py   # 模型调用（第1周代码搬进来）
+│   ├── schemas/          # Pydantic模型
+│   ├── core/config.py    # 配置读取（pydantic-settings读.env）
+│   └── core/logging.py   # 日志配置
+├── logs/                 # 日志文件
+├── pyproject.toml        # 项目依赖
+├── uv.lock               # 项目依赖锁文件
+├── .gitignore            # Git忽略文件
+└── README.md             # 项目说明

@@ -1,0 +1,15 @@
+
+### 模块职责
+1. `core/security.py`：API Key鉴权，放在接口依赖，拦截非法请求
+2. `schemas`：Pydantic做输入校验，2000字符上限拦截
+3. `utils/llm_client.py`：封装DeepSeek调用，内置防注入System Prompt，tenacity指数退避重试，只对可恢复异常重试
+4. `routers/chat.py`：对话路由，内存存储多轮会话，捕获LLM异常、记录业务日志、抛出HTTPException交给全局异常处理器
+5. `core/exception_handler.py`：全局异常，统一返回JSON格式
+6. logger：结构化日志，记录session_id、token消耗、耗时、错误类型
+
+## 环境准备 & 运行步骤
+> 前提：本机已安装 Python3.11+，uv工具
+
+1. 拉取代码，进入项目根目录
+```powershell
+cd D:\AgentSoftware\project\python_basics
