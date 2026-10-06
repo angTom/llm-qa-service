@@ -19,11 +19,17 @@ VALID_API_KEY = set(os.getenv("API_KEY", "").split(","))
 async def verify_api_key(api_key: str | None = Security(api_key_header)):
     """
     鉴权依赖项, 校验X-API-Key
+
+    args:
+        api_key: str | None = Security(api_key_header)  # 获取请求头X-API-Key
+
+    return:
+        api_key  获取的请求头X-API-Key    
     """
     # 没有传header
     if not api_key:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
+            status_code=status.HTTP_401_UNAUTHORIZED,
             detail="缺失X-API-Key请求头"
         )
     # 密钥不在合法列表

@@ -6,4 +6,4 @@ llm_qa_service.egg-info/SOURCES.txt
 llm_qa_service.egg-info/dependency_links.txt
 llm_qa_service.egg-info/requires.txt
 llm_qa_service.egg-info/top_level.txt
-test/test_llm_client.py
+tests/test_llm_client.py

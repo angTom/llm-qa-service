@@ -16,9 +16,9 @@ class SessionCreate(BaseModel):
 
 class SessionResponse(BaseModel):
     """会话返回"""
-    id: str 
-    title: str 
-    user_id: int 
+    id: str
+    title: str
+    user_id: int
     messages: list[Message] = []
-    created_at: str  
+    created_at: str
     updated_at: str

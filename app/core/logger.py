@@ -2,6 +2,7 @@
 
 import logging
 from pathlib import Path
+from typing import ClassVar, Dict
 
 
 class Logger:
@@ -9,8 +10,8 @@ class Logger:
     全局统一日志管理器
     """
     # 缓存已经创建的logger实例，防止重复添加handler
-    _cache = {}
-    def __init__(self, name: str,log_file: str, log_dir: str=None, level: int=logging.INFO):
+    _cache: ClassVar[Dict[str, logging.Logger]] = {}
+    def __init__(self, name: str,log_file: str, log_dir: str | None=None, level: int=logging.INFO):
         """
         初始化日志管理器
         :param name: 日志名称
@@ -38,8 +39,9 @@ class Logger:
                 log_dir.mkdir(parents=True, exist_ok=True)
             elif not log_dir.is_dir(): # 如果文件目录存在,但非目录,则报错
                 raise NotADirectoryError(f"路径{log_dir} 是一个普通文件,无法作为目录使用")
-        except Exception as e:
-            print(f"创建日志目录失败: {e}")
+        except (OSError, PermissionError, NotADirectoryError):
+
+            raise
 
         # 拼接文件名
         log_path = log_dir / log_file
@@ -67,4 +69,4 @@ class Logger:
             # 实例化并缓存
             instance = Logger(name=name,log_file=f"{name}.log")
             cls._cache[name] = instance
-        return cls._cache[name].logger    
+        return cls._cache[name].logger

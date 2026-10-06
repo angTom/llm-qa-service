@@ -11,4 +11,10 @@ router = APIRouter(tags=["健康检测"])
 @router.get("/health", summary="健康检测")
 async def health():
     """健康检测"""
-    return {"status": "ok"}
+    return {
+        "code": 200,
+        "message": "ok",
+        "data": {
+            "status": "healthy"
+        }
+    }

@@ -12,8 +12,20 @@ dependencies = [
     "fastapi[standard]>=0.141.1",
     "openai>=3.19.2",
     "python-dotenv>=1.2.3",
+    "ruff>=0.16.10",
     "tenacity>=9.1.4",
     "uvicorn>=0.54.0",
 ]
 [tool.setuptools]
 packages = ["app"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+select = [
+  "E",  # PEP8 语法错误
+  "W",  # 警告
+  "F",  # 导入相关检查
+  "I",  # 导入排序
+]
+fix = true

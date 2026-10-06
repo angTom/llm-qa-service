@@ -1,8 +1,37 @@
 # llm-qa-service   大模型调用服务 (电商运营AI助手后端项目)
+> 企业电商运营知识问答后端服务, 基于大模型实现客服问答,多轮对话,流式打字机输出, 配套token用量统计,api_key鉴权,输入安全防护.
 ## 项目背景
-基于FastAPI +DeepSeek LLM构建的企业级电商运营问答后端
-提供RESFTful `/chat`对话接口，支持多轮对话, API_Key接口鉴权, Prompt注入防护,输入长度校验, LLM调用重试, 结构化日志, 全局异常处理!
-> 学习项目: 大模型应用开发, 用于ToB客服类LLM服务练习!
+为电商运营业务开发的智能回答后端服务, 面向内部客服人员, 基于大模型解答电商运营相关问题, 支持多轮会话记忆,流式输出,Prompt注入防护与调用成本统计
+
+## 功能特性
+- ReSTful 同步问答接口 `/chat`
+- SSE 流式打字机接口 `/chat/stream`
+- API_KEY鉴权 (Header `X-API-KEY`)
+- 会话管理: 内存存储 `session_id` 多轮对话历史
+- Prompt注入防护: 输入长度校验 + 系统提示词约束
+- LLM调用异常兜底: 超时, 429限流自动重试, 鉴权错误直接拒绝
+- Token用量统计: 按天输入输出token数,调用次数统计 `/stats`
+- 全局统一异常处理, 标准化JSON返回格式 (401/422/500)
+- 完整日志记录: 请求信息, LLM耗时, token消耗,异常堆栈
+- 支持多模型切换: DeepSeek, OpenAI, Qwen (通过环境变量`MODEL_PROVTDER`配置选择)
+
+## 系统架构流程图
+客户端请求
+ -> 
+API Key 鉴权 (Security 依赖注入, 无Key/错误 Key 直接返回401)
+ -> 
+请求参数 Pydantic 校验 (长度校验, JSON 合法性校验, 非法返回 422)
+->
+会话管理 (读取/新建 session_id, 拼接历史 messages)
+ -> 
+ LLM Client (工厂模式, 自动选择 DeepSeek/Qwen, 内置 tenacity 重试) 
+ -> 
+ 大模型 API
+  -> 
+  结果处理: token 统计, 流式打字机输出, 日志记录, Prompt注入内容过滤
+  -> 
+  返回结果: (同步JSON/SSE 流式 chunk)
+
 ## 技术栈
 - Python 3.13
 - uv (包管理+虚拟环境)
@@ -12,19 +41,40 @@
 - pydantic: 请求参数校验
 python-dotenv: 环境变量管理
 - logging: 结构化日志
+## 快速开始
+### 1. 克隆项目
+```bash
+git clone https://github.com/your-username/llm-qa-service.git
+cd llm-qa-service
+### 2. 环境准备
+cp .env.example .env
+### 3. 安装依赖(uv)
+uv sync  
+# 或者可编辑模式
+uv pip install -e .
+### 4. 运行服务
+uv run fastapi dev app/main.py
 ## 项目结构
 llm-qa-service/
 ├── .env # 大模型配置文件（本地开发用，不要提交到Git）
 ├── .env.example # 配置模板文件
 ├── app/
 │   ├── main.py           # 入口，组装路由
-│   ├── routers/chat.py   # 问答接口
-│   ├── services/llm.py   # 模型调用（第1周代码搬进来）
-│   ├── schemas/          # Pydantic模型
-│   ├── core/config.py    # 配置读取（pydantic-settings读.env）
-│   └── core/logging.py   # 日志配置
+│   ├── routers/          # API路由
+│   │   ├──   chat.py   # 问答接口
+│   ├── llm/              # LLM适配器,工厂模式,基类
+│   ├── crud/             # 业务逻辑 (chat,chat_stream)
+│   ├── schemas/          # Pydantic模型/响应模型
+│   ├── core/             # 核心组件: 日志, 全局异常, 鉴权    
+│   │   ├── config.py     # 配置读取（pydantic-settings读.env）
+│   │   └── logging.py    # 日志配置
+│   ├── utils/            # 工具函数
+│   └── mddleware/        # 中间件
+├── tests/
 ├── logs/                 # 日志文件
-├── pyproject.toml        # 项目依赖
+├── pyproject.toml        # 项目依赖 
 ├── uv.lock               # 项目依赖锁文件
 ├── .gitignore            # Git忽略文件
 └── README.md             # 项目说明
+# Swagger截图
+![Swagger接口文档](app\docs\Swagger.png)

@@ -3,13 +3,13 @@
 会话CRUD路由
 """
 
-from datetime import datetime
 import uuid
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, HTTPException, Security
-
 from schemas.session import SessionCreate
 from utils.response import success_response
+
 from app.core.security import verify_api_key
 
 router = APIRouter(
@@ -24,7 +24,7 @@ sessions: dict[str, dict] = {}
 async def create_session(body: SessionCreate):
     """创建新会话"""
     session_id = str(uuid.uuid4())[:8]
-    now = datetime.now().isoformat() # 获取当前时间,并将其转换为符合ISO 8601标准的标准化字符串格式
+    now = datetime.now(timezone.utc).isoformat() # 获取当前时间,并将其转换为符合ISO 8601标准的标准化字符串格式
     sessions[session_id] = {
         "id": session_id,
         "title": body.title,

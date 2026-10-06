@@ -1,12 +1,10 @@
 
 from fastapi import FastAPI
-
-
-from middleware.logging_middleware import AccessLogMiddleware
 from routers import chat, health, sessions
 
 from app.core.exception_handler import register_exception_handlers
-
+from app.routers import chat_stream
+from middleware.logging_middleware import AccessLogMiddleware
 
 app = FastAPI()
 
@@ -20,8 +18,8 @@ app.add_middleware(AccessLogMiddleware)
 app.include_router(chat.router)
 app.include_router(health.router)
 app.include_router(sessions.router)
-
-@app.get("/") 
+app.include_router(chat_stream.router)  # 注册流式输出路由
+@app.get("/")
 async def root():
     return {"message": "Hello World"}
 

@@ -4,13 +4,14 @@
 
 from fastapi.responses import JSONResponse
 
+
 # 响应格式
-def success_response(code: int = 200, message: str = "success",data: any=None) -> JSONResponse:
+def success_response(code: int = 200, message: str = "success",data: any | None=None) -> JSONResponse:
     return JSONResponse(
-        status_code=200, 
+        status_code=200,
         content={
-            "code": code, 
-            "msg": message, 
+            "code": code,
+            "msg": message,
             "data": data
         }
     )
